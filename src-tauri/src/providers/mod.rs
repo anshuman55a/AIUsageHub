@@ -58,6 +58,7 @@ pub struct ProviderMeta {
     pub brand_color: String,
 }
 
+pub mod antigravity;
 pub mod claude;
 pub mod codex;
 pub mod copilot;
@@ -97,6 +98,12 @@ pub fn list_providers() -> Vec<ProviderMeta> {
             icon: "windsurf".into(),
             brand_color: "#00B4D8".into(),
         },
+        ProviderMeta {
+            id: "antigravity".into(),
+            name: "Antigravity".into(),
+            icon: "antigravity".into(),
+            brand_color: "#4285F4".into(),
+        },
     ]
 }
 
@@ -126,6 +133,7 @@ pub fn probe_provider(id: &str) -> ProviderResult {
         "copilot" => copilot::probe(),
         "codex" => codex::probe(),
         "windsurf" => windsurf::probe(),
+        "antigravity" => antigravity::probe(),
         _ => Err(format!("Unknown provider: {}", id)),
     };
 

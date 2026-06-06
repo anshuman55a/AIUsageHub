@@ -62,6 +62,7 @@ const PROVIDER_STYLES: Record<string, { bg: string }> = {
   copilot: { bg: "#000000" },
   codex: { bg: "#000000" },
   windsurf: { bg: "#00B4D8" },
+  antigravity: { bg: "#4285F4" },
 };
 
 function BoltIcon({ className }: { className?: string }) {
@@ -753,7 +754,7 @@ function App() {
         {!isLoading && providers.length === 0 && (
           <div className="empty-state">
             <BoltIcon />
-            <p>No providers configured.<br />Sign into Cursor, Claude, Copilot, or Codex to get started.</p>
+            <p>No providers configured.<br />Sign into Cursor, Claude, Copilot, Codex, or Antigravity to get started.</p>
           </div>
         )}
       </div>
