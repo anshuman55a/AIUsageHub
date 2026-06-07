@@ -1,6 +1,6 @@
 [package]
 name = "usagedock"
-version = "0.2.9"
+version = "0.2.10"
 description = "Cross-platform AI coding subscription usage tracker"
 authors = ["anshu"]
 edition = "2021"
