@@ -2,6 +2,13 @@
 
 All notable changes to UsageDock are documented here.
 
+## [0.2.10] - 2026-06-06
+
+- Added Google's Antigravity (Gemini/AI IDE) quota tracking provider, supporting both local language server discovery (no authentication needed) and Cloud Code API credentials fallback.
+- Re-architected and compacted the tray UI layout to recover ~102px (~20% of vertical space) for provider cards.
+- Moved auto-refresh and check-for-updates controls into a new slide-down settings panel accessed via a gear icon.
+- Polished layout details: tightened logo-to-title gap, narrowed the status pill, and removed duplicate reset timing labels on metrics.
+
 ## [0.2.9] - 2026-04-15
 
 - Refined provider card density, reset-text readability, and multi-metric spacing for a cleaner tray view.
