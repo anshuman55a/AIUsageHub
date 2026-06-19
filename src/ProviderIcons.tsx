@@ -42,6 +42,12 @@ export const AntigravityIcon = () => (
     </svg>
 );
 
+export const OllamaIcon = () => (
+    <svg style={iconStyle} viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M512 96C335.3 96 192 239.3 192 416c0 120.5 66.5 225.5 165 280.1V800c0 35.3 28.7 64 64 64h182c35.3 0 64-28.7 64-64v-103.9c98.5-54.6 165-159.6 165-280.1 0-176.7-143.3-320-320-320zm-96 384c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm192 0c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zM421 864h182v32H421v-32zm0 64h182v32H421v-32z" fill="currentColor" />
+    </svg>
+);
+
 // Map provider IDs to icon components
 export const PROVIDER_ICONS: Record<string, React.FC> = {
     cursor: CursorIcon,
@@ -50,4 +56,6 @@ export const PROVIDER_ICONS: Record<string, React.FC> = {
     codex: CodexIcon,
     windsurf: WindsurfIcon,
     antigravity: AntigravityIcon,
+    ollama: OllamaIcon,
 };
+

@@ -63,6 +63,7 @@ pub mod claude;
 pub mod codex;
 pub mod copilot;
 pub mod cursor;
+pub mod ollama;
 pub mod windsurf;
 
 /// Get metadata for all supported providers
@@ -104,6 +105,12 @@ pub fn list_providers() -> Vec<ProviderMeta> {
             icon: "antigravity".into(),
             brand_color: "#4285F4".into(),
         },
+        ProviderMeta {
+            id: "ollama".into(),
+            name: "Ollama".into(),
+            icon: "ollama".into(),
+            brand_color: "#000000".into(),
+        },
     ]
 }
 
@@ -134,6 +141,7 @@ pub fn probe_provider(id: &str) -> ProviderResult {
         "codex" => codex::probe(),
         "windsurf" => windsurf::probe(),
         "antigravity" => antigravity::probe(),
+        "ollama" => ollama::probe(),
         _ => Err(format!("Unknown provider: {}", id)),
     };
 

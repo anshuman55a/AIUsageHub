@@ -63,6 +63,7 @@ const PROVIDER_STYLES: Record<string, { bg: string }> = {
   codex: { bg: "#000000" },
   windsurf: { bg: "#00B4D8" },
   antigravity: { bg: "#4285F4" },
+  ollama: { bg: "#000000" },
 };
 
 function BoltIcon({ className }: { className?: string }) {
@@ -323,6 +324,9 @@ function App() {
   const settingsPanelRef = useRef<HTMLDivElement>(null);
   const settingsBtnRef = useRef<HTMLButtonElement>(null);
   const settingsCloseTimeoutRef = useRef<number | null>(null);
+  const [ollamaUrl, setOllamaUrl] = useState("http://localhost:11434");
+  const [ollamaApiKey, setOllamaApiKey] = useState("");
+  const [ollamaSaved, setOllamaSaved] = useState(false);
   const availableProviders = providers.filter((provider) => !provider.error && provider.lines.length > 0);
   const unavailableProviders = providers.filter((provider) => provider.error || provider.lines.length === 0);
   const unavailableCaption = availableProviders.length > 0
@@ -437,6 +441,15 @@ function App() {
   useEffect(() => {
     checkForUpdates(false);
   }, [checkForUpdates]);
+
+  useEffect(() => {
+    invoke<{ url: string; apiKey: string }>("get_ollama_settings")
+      .then((s) => {
+        setOllamaUrl(s.url || "http://localhost:11434");
+        setOllamaApiKey(s.apiKey || "");
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     window.localStorage.setItem(AUTO_REFRESH_ENABLED_KEY, String(autoRefreshEnabled));
@@ -669,6 +682,47 @@ function App() {
               </button>
             </div>
           )}
+
+          <div className="settings-section-label">Ollama</div>
+          <div className="settings-row settings-row-ollama">
+            <label className="settings-input-field">
+              <span className="settings-input-label">URL</span>
+              <input
+                type="text"
+                className="settings-input"
+                value={ollamaUrl}
+                onChange={(e) => { setOllamaUrl(e.target.value); setOllamaSaved(false); }}
+                placeholder="http://localhost:11434"
+                spellCheck={false}
+              />
+            </label>
+            <label className="settings-input-field">
+              <span className="settings-input-label">API Key</span>
+              <input
+                type="password"
+                className="settings-input"
+                value={ollamaApiKey}
+                onChange={(e) => { setOllamaApiKey(e.target.value); setOllamaSaved(false); }}
+                placeholder="Optional"
+                spellCheck={false}
+                autoComplete="off"
+              />
+            </label>
+            <button
+              type="button"
+              className={`settings-update-btn ${ollamaSaved ? "settings-saved-btn" : ""}`}
+              onClick={async () => {
+                try {
+                  await invoke("save_ollama_settings", { url: ollamaUrl, apiKey: ollamaApiKey });
+                  setOllamaSaved(true);
+                } catch (e) {
+                  console.error("Failed to save Ollama settings:", e);
+                }
+              }}
+            >
+              {ollamaSaved ? "Saved ✓" : "Save"}
+            </button>
+          </div>
         </div>
       )}
 
@@ -754,7 +808,7 @@ function App() {
         {!isLoading && providers.length === 0 && (
           <div className="empty-state">
             <BoltIcon />
-            <p>No providers configured.<br />Sign into Cursor, Claude, Copilot, Codex, or Antigravity to get started.</p>
+            <p>No providers configured.<br />Sign into Cursor, Claude, Copilot, Codex, Antigravity, or start Ollama to get started.</p>
           </div>
         )}
       </div>

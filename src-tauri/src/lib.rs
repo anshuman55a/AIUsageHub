@@ -119,6 +119,24 @@ fn updater_enabled_command() -> bool {
 }
 
 #[tauri::command]
+fn get_ollama_settings() -> providers::ollama::OllamaSettings {
+    providers::ollama::load_settings()
+}
+
+#[tauri::command]
+fn save_ollama_settings(url: String, api_key: String) -> Result<(), String> {
+    let settings = providers::ollama::OllamaSettings {
+        url: if url.trim().is_empty() {
+            "http://localhost:11434".into()
+        } else {
+            url.trim().trim_end_matches('/').to_string()
+        },
+        api_key: api_key.trim().to_string(),
+    };
+    providers::ollama::save_settings(&settings)
+}
+
+#[tauri::command]
 async fn check_for_app_update(app: tauri::AppHandle) -> Result<Option<AppUpdateInfo>, String> {
     let update = build_updater(&app)?
         .check()
@@ -263,7 +281,9 @@ pub fn run() {
             probe_all,
             updater_enabled_command,
             check_for_app_update,
-            install_app_update
+            install_app_update,
+            get_ollama_settings,
+            save_ollama_settings
         ])
         .run(tauri::generate_context!())
         .expect("Error while running UsageDock");
