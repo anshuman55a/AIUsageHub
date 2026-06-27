@@ -125,12 +125,25 @@ fn get_ollama_settings() -> providers::ollama::OllamaSettings {
 
 #[tauri::command]
 fn save_ollama_settings(url: String, api_key: String) -> Result<(), String> {
+    let clean_url = if url.trim().is_empty() {
+        "http://localhost:11434".into()
+    } else {
+        let trimmed = url.trim().trim_end_matches('/').to_string();
+        // Only allow http:// and https:// schemes to prevent API key exfiltration
+        let lower = trimmed.to_lowercase();
+        if !lower.starts_with("http://") && !lower.starts_with("https://") {
+            return Err("URL must start with http:// or https://".into());
+        }
+        // Block URLs with credentials embedded (http://user:pass@host)
+        if let Some(after_scheme) = lower.strip_prefix("http://").or_else(|| lower.strip_prefix("https://")) {
+            if after_scheme.contains('@') {
+                return Err("URL must not contain embedded credentials".into());
+            }
+        }
+        trimmed
+    };
     let settings = providers::ollama::OllamaSettings {
-        url: if url.trim().is_empty() {
-            "http://localhost:11434".into()
-        } else {
-            url.trim().trim_end_matches('/').to_string()
-        },
+        url: clean_url,
         api_key: api_key.trim().to_string(),
     };
     providers::ollama::save_settings(&settings)

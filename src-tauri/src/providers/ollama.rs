@@ -77,13 +77,36 @@ fn build_client() -> reqwest::blocking::Client {
         .unwrap_or_else(|_| reqwest::blocking::Client::new())
 }
 
+/// Returns true if the URL is safe to send an API key to (localhost or ollama.com).
+fn is_trusted_ollama_url(url: &str) -> bool {
+    let lower = url.to_lowercase();
+    // Strip scheme
+    let host_part = lower
+        .strip_prefix("http://")
+        .or_else(|| lower.strip_prefix("https://"))
+        .unwrap_or(&lower);
+    // Extract host (before first / or :)
+    let host = host_part
+        .split('/')
+        .next()
+        .unwrap_or("")
+        .split(':')
+        .next()
+        .unwrap_or("");
+    matches!(
+        host,
+        "localhost" | "127.0.0.1" | "::1" | "0.0.0.0"
+    ) || host.ends_with(".ollama.com")
+      || host == "ollama.com"
+}
+
 fn ollama_get(
     client: &reqwest::blocking::Client,
     url: &str,
     api_key: &str,
 ) -> Result<(serde_json::Value, HashMap<String, String>), String> {
     let mut req = client.get(url).header("Accept", "application/json");
-    if !api_key.is_empty() {
+    if !api_key.is_empty() && is_trusted_ollama_url(url) {
         req = req.header("Authorization", format!("Bearer {}", api_key));
     }
     let resp = req.send().map_err(|e| format!("Network error: {}", e))?;
@@ -114,7 +137,7 @@ fn ollama_post(
         .header("Accept", "application/json")
         .header("Content-Type", "application/json")
         .body("{}");
-    if !api_key.is_empty() {
+    if !api_key.is_empty() && is_trusted_ollama_url(url) {
         req = req.header("Authorization", format!("Bearer {}", api_key));
     }
     let resp = req.send().ok()?;
@@ -563,7 +586,8 @@ fn get_ollama_db_path() -> Option<String> {
     }
 }
 
-fn query_count(conn: &rusqlite::Connection, sql: &str) -> i64 {
+/// Only accepts compile-time static SQL to prevent accidental injection.
+fn query_count(conn: &rusqlite::Connection, sql: &'static str) -> i64 {
     conn.query_row(sql, [], |row| row.get::<_, i64>(0))
         .unwrap_or(0)
 }
