@@ -1,12 +1,14 @@
 import { useState, useEffect, useCallback, useRef, type CSSProperties } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import { RefreshCw, AlertCircle, ChevronDown, Settings, X } from "lucide-react";
+import { RefreshCw, AlertCircle, ChevronDown, Settings, X, Sun, Moon, Monitor } from "lucide-react";
 import { PROVIDER_ICONS } from "./ProviderIcons";
 import "./App.css";
 
 const AUTO_REFRESH_ENABLED_KEY = "usagedock:autoRefreshEnabled";
 const AUTO_REFRESH_MINUTES_KEY = "usagedock:autoRefreshMinutes";
 const AUTO_REFRESH_OPTIONS = [5, 10, 15, 30, 60] as const;
+const THEME_KEY = "usagedock:theme";
+type ThemeChoice = "system" | "light" | "dark";
 
 // Types matching the Rust backend
 interface MetricFormat {
@@ -327,6 +329,11 @@ function App() {
   const [ollamaUrl, setOllamaUrl] = useState("http://localhost:11434");
   const [ollamaApiKey, setOllamaApiKey] = useState("");
   const [ollamaSaved, setOllamaSaved] = useState(false);
+  const [theme, setTheme] = useState<ThemeChoice>(() => {
+    if (typeof window === "undefined") return "system";
+    const stored = window.localStorage.getItem(THEME_KEY);
+    return (stored === "light" || stored === "dark") ? stored : "system";
+  });
   const availableProviders = providers.filter((provider) => !provider.error && provider.lines.length > 0);
   const unavailableProviders = providers.filter((provider) => provider.error || provider.lines.length === 0);
   const unavailableCaption = availableProviders.length > 0
@@ -452,6 +459,19 @@ function App() {
   }, []);
 
   useEffect(() => {
+    window.localStorage.setItem(THEME_KEY, theme);
+    if (theme === "system") {
+      document.documentElement.removeAttribute("data-theme");
+      document.documentElement.style.colorScheme = "";
+      document.body.removeAttribute("data-theme");
+    } else {
+      document.documentElement.setAttribute("data-theme", theme);
+      document.documentElement.style.colorScheme = theme;
+      document.body.setAttribute("data-theme", theme);
+    }
+  }, [theme]);
+
+  useEffect(() => {
     window.localStorage.setItem(AUTO_REFRESH_ENABLED_KEY, String(autoRefreshEnabled));
   }, [autoRefreshEnabled]);
 
@@ -572,7 +592,7 @@ function App() {
   const updateSummary = summarizeUpdateNotes(updateInfo?.notes);
 
   return (
-    <div className="app-shell">
+    <div className="app-shell" data-theme={theme !== "system" ? theme : undefined}>
       <div className="header">
         <div className="header-mark">
           <BoltIcon />
@@ -664,6 +684,45 @@ function App() {
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+
+          <div className="settings-row settings-row-theme">
+            <span className="toggle-label">Theme</span>
+            <div className="theme-picker" role="radiogroup" aria-label="Theme">
+              <button
+                type="button"
+                role="radio"
+                aria-checked={theme === "system"}
+                className={`theme-option ${theme === "system" ? "theme-option-active" : ""}`}
+                onClick={() => setTheme("system")}
+                title="Follow system"
+              >
+                <Monitor />
+                <span>System</span>
+              </button>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={theme === "light"}
+                className={`theme-option ${theme === "light" ? "theme-option-active" : ""}`}
+                onClick={() => setTheme("light")}
+                title="Light mode"
+              >
+                <Sun />
+                <span>Light</span>
+              </button>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={theme === "dark"}
+                className={`theme-option ${theme === "dark" ? "theme-option-active" : ""}`}
+                onClick={() => setTheme("dark")}
+                title="Dark mode"
+              >
+                <Moon />
+                <span>Dark</span>
+              </button>
             </div>
           </div>
 
