@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, type CSSProperties } from "re
 import { invoke } from "@tauri-apps/api/core";
 import { RefreshCw, AlertCircle, ChevronDown, Settings, X, Sun, Moon, Monitor } from "lucide-react";
 import { PROVIDER_ICONS } from "./ProviderIcons";
+import appLogo from "./assets/app-logo.png";
 import "./App.css";
 
 const AUTO_REFRESH_ENABLED_KEY = "usagedock:autoRefreshEnabled";
@@ -67,20 +68,6 @@ const PROVIDER_STYLES: Record<string, { bg: string }> = {
   antigravity: { bg: "#4285F4" },
   ollama: { bg: "#000000" },
 };
-
-function BoltIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M13.5 1.5 5 13h5l-1.5 9.5L19 10h-5.25L13.5 1.5Z"
-        fill="currentColor"
-        stroke="currentColor"
-        strokeLinejoin="round"
-        strokeWidth="1"
-      />
-    </svg>
-  );
-}
 
 function formatValue(used: number, limit: number, format: MetricFormat): string {
   switch (format.kind) {
@@ -594,9 +581,7 @@ function App() {
   return (
     <div className="app-shell" data-theme={theme !== "system" ? theme : undefined}>
       <div className="header">
-        <div className="header-mark">
-          <BoltIcon />
-        </div>
+        <img className="header-mark" src={appLogo} alt="UsageDock" draggable={false} />
         <span className="header-product">UsageDock</span>
         <div className={`header-status ${isLoading ? "header-status-live" : ""}`}>
           <span className="header-status-dot" />
@@ -866,7 +851,7 @@ function App() {
 
         {!isLoading && providers.length === 0 && (
           <div className="empty-state">
-            <BoltIcon />
+            <img className="empty-logo" src={appLogo} alt="UsageDock" draggable={false} />
             <p>No providers configured.<br />Sign into Cursor, Claude, Copilot, Codex, Antigravity, or start Ollama to get started.</p>
           </div>
         )}

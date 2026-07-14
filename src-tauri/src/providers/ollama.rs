@@ -939,25 +939,23 @@ pub fn probe() -> Result<(Option<String>, Vec<MetricLine>), String> {
     let client = build_client();
 
     // 1. Version — liveness check
-    let mut version = String::new();
-    let mut all_rate_headers: HashMap<String, String> = HashMap::new();
-
-    match ollama_get(&client, &format!("{}/api/version", base), api_key) {
-        Ok((body, headers)) => {
-            version = body
-                .get("version")
-                .and_then(|v| v.as_str())
-                .unwrap_or("")
-                .to_string();
-            all_rate_headers = headers;
-        }
-        Err(_) => {
-            return Err(format!(
-                "Ollama not running at {}. Start Ollama and try again.",
-                base
-            ));
-        }
-    }
+    let (version, mut all_rate_headers): (String, HashMap<String, String>) =
+        match ollama_get(&client, &format!("{}/api/version", base), api_key) {
+            Ok((body, headers)) => {
+                let version = body
+                    .get("version")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("")
+                    .to_string();
+                (version, headers)
+            }
+            Err(_) => {
+                return Err(format!(
+                    "Ollama not running at {}. Start Ollama and try again.",
+                    base
+                ));
+            }
+        };
 
     // 2. Running models (/api/ps)
     let mut running_models: Vec<serde_json::Value> = Vec::new();
