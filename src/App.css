@@ -13,8 +13,8 @@
   --color-text-primary: #edf3f7;
   --color-text-secondary: #a7b4c2;
   --color-text-muted: #708091;
-  --brand-primary: #c98a4b;
-  --brand-primary-rgb: 201, 138, 75;
+  --brand-primary: #4285F4;
+  --brand-primary-rgb: 66, 133, 244;
   --color-accent: var(--brand-primary);
   --color-accent-soft: rgba(var(--brand-primary-rgb), 0.18);
   --color-success: #6bbd90;
@@ -45,8 +45,8 @@ body,
 body {
   background:
     radial-gradient(circle at top left, rgba(var(--brand-primary-rgb), 0.14), transparent 30%),
-    radial-gradient(circle at top right, rgba(161, 120, 75, 0.12), transparent 24%),
-    linear-gradient(180deg, #12100c 0%, #080605 100%);
+    radial-gradient(circle at top right, rgba(75, 122, 161, 0.12), transparent 24%),
+    linear-gradient(180deg, #09111a 0%, #050910 100%);
   color: var(--color-text-primary);
   font-family: "Outfit", "Helvetica Neue", Arial, sans-serif;
   font-size: 13px;
@@ -133,7 +133,7 @@ body {
   border-radius: 8px;
   object-fit: contain;
   box-shadow:
-    0 4px 12px rgba(var(--brand-primary-rgb), 0.28),
+    0 4px 12px rgba(201, 138, 75, 0.28),
     0 1px 2px rgba(0, 0, 0, 0.18);
   -webkit-user-drag: none;
   user-select: none;
@@ -1132,7 +1132,7 @@ body {
   object-fit: contain;
   opacity: 0.9;
   box-shadow:
-    0 6px 18px rgba(var(--brand-primary-rgb), 0.25),
+    0 6px 18px rgba(201, 138, 75, 0.25),
     0 1px 2px rgba(0, 0, 0, 0.15);
   -webkit-user-drag: none;
 }
@@ -1277,8 +1277,8 @@ body {
 body[data-theme="dark"] {
   background:
     radial-gradient(circle at top left, rgba(var(--brand-primary-rgb), 0.1), transparent 30%),
-    radial-gradient(circle at top right, rgba(140, 105, 65, 0.08), transparent 24%),
-    linear-gradient(180deg, #100d09 0%, #060504 100%);
+    radial-gradient(circle at top right, rgba(60, 100, 140, 0.08), transparent 24%),
+    linear-gradient(180deg, #040810 0%, #020406 100%);
   color: #edf3f7;
 }
 
@@ -1308,8 +1308,8 @@ body[data-theme="dark"] {
   :root:not([data-theme]) body {
     background:
       radial-gradient(circle at top left, rgba(var(--brand-primary-rgb), 0.1), transparent 30%),
-      radial-gradient(circle at top right, rgba(140, 105, 65, 0.08), transparent 24%),
-      linear-gradient(180deg, #100d09 0%, #060504 100%);
+      radial-gradient(circle at top right, rgba(60, 100, 140, 0.08), transparent 24%),
+      linear-gradient(180deg, #040810 0%, #020406 100%);
   }
 
   :root:not([data-theme]) .app-shell {
@@ -1326,6 +1326,8 @@ body[data-theme="dark"] {
 /* ─── Light mode overrides (data-theme + media query fallback) ─── */
 
 :root[data-theme="light"] {
+  --brand-primary: #c98a4b;
+  --brand-primary-rgb: 201, 138, 75;
   --color-bg: #f7f4f0;
   --color-bg-elevated: #ffffff;
   --color-surface: rgba(255, 255, 255, 0.9);
@@ -1590,6 +1592,8 @@ body[data-theme="light"] {
 /* System fallback: light preference without data-theme */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme]) {
+    --brand-primary: #c98a4b;
+    --brand-primary-rgb: 201, 138, 75;
     --color-bg: #f7f4f0;
     --color-bg-elevated: #ffffff;
     --color-surface: rgba(255, 255, 255, 0.9);
