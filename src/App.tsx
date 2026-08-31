@@ -60,13 +60,13 @@ interface AppUpdateInfo {
 
 // Provider brand colors
 const PROVIDER_STYLES: Record<string, { bg: string }> = {
-  cursor: { bg: "#000000" },
+  cursor: { bg: "#00CC88" },
   claude: { bg: "#D97757" },
-  copilot: { bg: "#000000" },
-  codex: { bg: "#000000" },
-  windsurf: { bg: "#00B4D8" },
+  copilot: { bg: "#24292F" },
+  codex: { bg: "#10A37F" },
+  windsurf: { bg: "#09B6A2" },
   antigravity: { bg: "#4285F4" },
-  ollama: { bg: "#000000" },
+  ollama: { bg: "#1A1A1A" },
 };
 
 function formatValue(used: number, limit: number, format: MetricFormat): string {
